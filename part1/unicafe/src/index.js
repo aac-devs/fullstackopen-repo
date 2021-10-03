@@ -3,12 +3,12 @@ import ReactDOM from 'react-dom';
 
 const Statistics = ({ good, neutral, bad }) => {
   const allComments = good + neutral + bad;
-  let average = 0;
-  let percentage = 0;
-  if (allComments !== 0) {
-    average = (good - bad) / allComments;
-    percentage = (good * 100) / allComments;
-  }
+
+  if (allComments === 0) return <p>No feedback given</p>;
+
+  const average = (good - bad) / allComments;
+  const percentage = (good * 100) / allComments;
+
   return (
     <>
       <h1>statistics</h1>
