@@ -11,6 +11,14 @@ const App = () => {
     setComment(newValue);
   };
 
+  const allComments = good + neutral + bad;
+  let average = 0;
+  let percentage = 0;
+  if (allComments !== 0) {
+    average = (good - bad) / allComments;
+    percentage = (good * 100) / allComments;
+  }
+
   return (
     <div>
       <h1>give feedback</h1>
@@ -21,6 +29,9 @@ const App = () => {
       <p>good {good}</p>
       <p>neutral {neutral}</p>
       <p>bad {bad}</p>
+      <p>all {allComments}</p>
+      <p>average {average}</p>
+      <p>positive {percentage} %</p>
     </div>
   );
 };
