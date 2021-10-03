@@ -24,12 +24,30 @@ const App = (props) => {
     });
   };
 
+  const mostVotes = () => {
+    if (Object.keys(votes).length > 0) {
+      const values = Object.values(votes);
+      const maximum = Math.max(...values);
+      const index = values.indexOf(maximum);
+      const key = Object.keys(votes)[index];
+      return (
+        <>
+          <h1>Anecdote with most votes</h1>
+          <p>{props.anecdotes[+key]}</p>
+          <p>has {maximum} votes</p>
+        </>
+      );
+    }
+  };
+
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       {props.anecdotes[selected]}
       <p>has {!votes[selected] ? '0' : votes[selected]} votes</p>
       <button onClick={buttonVoteHandler}>vote</button>
       <button onClick={buttonNextHandler}>next anecdote</button>
+      {mostVotes()}
     </div>
   );
 };
