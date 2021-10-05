@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Filter from './components/Filter';
+import Notification from './components/Notification';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
 import personService from './services/persons';
@@ -9,6 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filteredName, setFilteredName] = useState('');
+  const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
@@ -44,6 +46,10 @@ const App = () => {
             return person;
           });
           setPersons(updatedList);
+          setSuccessMessage(`Updated ${name}`);
+          setTimeout(() => {
+            setSuccessMessage(null);
+          }, 3000);
         });
         return;
       }
@@ -53,6 +59,10 @@ const App = () => {
         .create({ name: newName.trim(), number: newNumber })
         .then((returnedPerson) => {
           setPersons(persons.concat(returnedPerson));
+          setSuccessMessage(`Added ${newName}`);
+          setTimeout(() => {
+            setSuccessMessage(null);
+          }, 3000);
         });
     }
 
@@ -78,6 +88,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={successMessage} />
       <Filter
         filteredName={filteredName}
         onChange={inputChangeHandler}
