@@ -1,13 +1,18 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import Details from './components/Details';
+import List from './components/List';
 
 const App = () => {
   const [countries, setCountries] = useState([]);
   const [countryToFind, setCountryToFind] = useState('');
   const [error, setError] = useState(false);
+  const [countrySelected, setCountrySelected] = useState('');
+  const [detailedCountry, setDetailedCountry] = useState(null);
 
   useEffect(() => {
     setError(false);
+    setDetailedCountry(null);
     const handler = setTimeout(() => {
       if (countryToFind.trim() !== '') {
         axios
@@ -26,56 +31,62 @@ const App = () => {
     };
   }, [countryToFind, setCountries]);
 
-  const searchHandler = (event) => {
-    setCountryToFind(event.target.value);
+  useEffect(() => {
+    setError(false);
+    if (countrySelected !== '') {
+      axios
+        .get(`https://restcountries.com/v3.1/alpha/${countrySelected}`)
+        .then((response) => {
+          setDetailedCountry(response.data);
+        })
+        .catch(() => setError(true));
+    }
+  }, [countrySelected]);
+
+  const handler = (callback, event) => () => {
+    callback(event);
   };
 
-  let countriesToShow = null;
+  let countriesListToShow = null;
+  let countrySelectedToShow = null;
+
   if (error) {
-    countriesToShow = <p>Nothing found</p>;
+    countriesListToShow = <p>Nothing found</p>;
   } else {
     if (countries.length >= 10) {
-      countriesToShow = (
+      countriesListToShow = (
         <p>Too many matches ({countries.length}), specify another filter</p>
       );
     } else if (countries.length === 0) {
-      countriesToShow = <p>Nothing to show</p>;
+      countriesListToShow = <p>Nothing to show</p>;
     } else if (countries.length === 1) {
-      const {
-        name: { common: name },
-        capital,
-        population,
-        languages,
-        flags: { png: flag },
-      } = countries[0];
-      countriesToShow = (
-        <div>
-          <h2>{name}</h2>
-          <p>capital {capital}</p>
-          <p>population {population}</p>
-          <h3>languages</h3>
-          <ul>
-            {Object.values(languages).map((lang) => (
-              <li key={lang}>{lang}</li>
-            ))}
-          </ul>
-          <img src={flag} alt="flag" />
-        </div>
-      );
+      countrySelectedToShow = <Details details={countries[0]} />;
     } else {
-      countriesToShow = countries.map((country) => (
-        <li key={country.cca3}>{country.name.common}</li>
-      ));
+      countriesListToShow = (
+        <List
+          list={countries}
+          onClick={(e) => handler(setCountrySelected, e.target.name)()}
+        />
+      );
     }
+  }
+
+  if (detailedCountry) {
+    countrySelectedToShow = <Details details={detailedCountry[0]} />;
   }
 
   return (
     <div>
       <h1>Countries</h1>
       <div>
-        find countries <input value={countryToFind} onChange={searchHandler} />
+        find countries&nbsp;
+        <input
+          value={countryToFind}
+          onChange={(e) => handler(setCountryToFind, e.target.value)()}
+        />
       </div>
-      <div>{countriesToShow}</div>
+      <div>{countriesListToShow}</div>
+      <div>{countrySelectedToShow}</div>
     </div>
   );
 };
