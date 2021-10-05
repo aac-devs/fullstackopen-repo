@@ -10,7 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filteredName, setFilteredName] = useState('');
-  const [successMessage, setSuccessMessage] = useState(null);
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
@@ -40,17 +40,32 @@ const App = () => {
           (person) => person.name === newName
         )[0];
         const { id, name } = personToUpdate;
-        personService.update(id, { name, number: newNumber }).then((resp) => {
-          const updatedList = persons.map((person) => {
-            if (person.id === id) return resp;
-            return person;
+        personService
+          .update(id, { name, number: newNumber })
+          .then((resp) => {
+            const updatedList = persons.map((person) => {
+              if (person.id === id) return resp;
+              return person;
+            });
+            setPersons(updatedList);
+            setMessage({ msg: `Updated ${name}`, type: 'success' });
+            setTimeout(() => {
+              setMessage(null);
+            }, 3000);
+          })
+          .catch((err) => {
+            const updatedList = persons.filter(
+              (person) => person.name !== name
+            );
+            setPersons(updatedList);
+            setMessage({
+              msg: `Information of ${name} has already been removed from server`,
+              type: 'error',
+            });
+            setTimeout(() => {
+              setMessage(null);
+            }, 3000);
           });
-          setPersons(updatedList);
-          setSuccessMessage(`Updated ${name}`);
-          setTimeout(() => {
-            setSuccessMessage(null);
-          }, 3000);
-        });
         return;
       }
       return;
@@ -59,9 +74,9 @@ const App = () => {
         .create({ name: newName.trim(), number: newNumber })
         .then((returnedPerson) => {
           setPersons(persons.concat(returnedPerson));
-          setSuccessMessage(`Added ${newName}`);
+          setMessage({ msg: `Added ${newName}`, type: 'success' });
           setTimeout(() => {
-            setSuccessMessage(null);
+            setMessage(null);
           }, 3000);
         });
     }
@@ -88,7 +103,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={successMessage} />
+      <Notification message={message?.msg} error={message?.type} />
       <Filter
         filteredName={filteredName}
         onChange={inputChangeHandler}
