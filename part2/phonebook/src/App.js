@@ -28,18 +28,28 @@ const App = () => {
     setNewNumber('');
 
     const names = persons.map((person) => person.name.toLowerCase());
-    if (names.includes(newName.toLowerCase())) {
-      alert(`${newName} is already added to phonebook`);
+    if (names.includes(newName.trim().toLowerCase())) {
+      alert(`${newName.trim()} is already added to phonebook`);
       return;
     }
 
     setFilteredName('');
 
     personService
-      .create({ name: newName, number: newNumber })
+      .create({ name: newName.trim(), number: newNumber })
       .then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson));
       });
+  };
+
+  const handleDelete = (id) => {
+    const { name } = persons.filter((person) => person.id === id)[0];
+    if (window.confirm(`Delete ${name}?`)) {
+      personService.remove(id).then((res) => {
+        const restPersons = persons.filter((person) => person.id !== id);
+        setPersons(restPersons);
+      });
+    }
   };
 
   const inputChangeHandler =
@@ -66,7 +76,11 @@ const App = () => {
         newNumber={newNumber}
       />
       <h3>Numbers</h3>
-      <Persons persons={persons} filteredName={filteredName} />
+      <Persons
+        persons={persons}
+        filteredName={filteredName}
+        onClick={handleDelete}
+      />
     </div>
   );
 };

@@ -16,7 +16,11 @@ const Persons = (props) => {
           return null;
         })
         .map((person) => (
-          <Person key={person.name} person={person} />
+          <Person
+            key={person.name}
+            person={person}
+            onClick={() => props.onClick(person.id)}
+          />
         ))}
     </ul>
   );
