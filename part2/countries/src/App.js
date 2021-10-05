@@ -3,6 +3,8 @@ import axios from 'axios';
 import Details from './components/Details';
 import List from './components/List';
 
+const BASE_URL = process.env.REACT_APP_COUNTRIES_URL;
+
 const App = () => {
   const [countries, setCountries] = useState([]);
   const [countryToFind, setCountryToFind] = useState('');
@@ -13,16 +15,15 @@ const App = () => {
   useEffect(() => {
     setError(false);
     setDetailedCountry(null);
+    setCountries([]);
     const handler = setTimeout(() => {
       if (countryToFind.trim() !== '') {
         axios
-          .get(`https://restcountries.com/v3.1/name/${countryToFind}`)
+          .get(`${BASE_URL}name/${countryToFind}`)
           .then((response) => {
             setCountries(response.data);
           })
           .catch(() => setError(true));
-      } else {
-        setCountries([]);
       }
     }, 300);
 
@@ -35,7 +36,7 @@ const App = () => {
     setError(false);
     if (countrySelected !== '') {
       axios
-        .get(`https://restcountries.com/v3.1/alpha/${countrySelected}`)
+        .get(`${BASE_URL}alpha/${countrySelected}`)
         .then((response) => {
           setDetailedCountry(response.data);
         })
