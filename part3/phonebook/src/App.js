@@ -36,8 +36,11 @@ const App = () => {
           `${newName.trim()} is already added to phonebook, replace the old number with a new one?`
         )
       ) {
+        console.log(persons);
+
         const personToUpdate = persons.filter(
-          (person) => person.name === newName
+          (person) =>
+            person.name.trim().toLowerCase() === newName.trim().toLowerCase()
         )[0];
         const { id, name } = personToUpdate;
         personService
@@ -49,22 +52,18 @@ const App = () => {
             });
             setPersons(updatedList);
             setMessage({ msg: `Updated ${name}`, type: 'success' });
-            setTimeout(() => {
-              setMessage(null);
-            }, 3000);
+            setTimeout(() => setMessage(null), 3000);
           })
           .catch((err) => {
-            const updatedList = persons.filter(
-              (person) => person.name !== name
-            );
-            setPersons(updatedList);
-            setMessage({
-              msg: `Information of ${name} has already been removed from server`,
-              type: 'error',
-            });
-            setTimeout(() => {
-              setMessage(null);
-            }, 3000);
+            const msg = err.response.data.error;
+            if (msg.startsWith('Not Found')) {
+              const updatedList = persons.filter(
+                (person) => person.name !== name
+              );
+              setPersons(updatedList);
+            }
+            setMessage({ msg, type: 'error' });
+            setTimeout(() => setMessage(null), 3000);
           });
         return;
       }
@@ -75,9 +74,7 @@ const App = () => {
         .then((returnedPerson) => {
           setPersons(persons.concat(returnedPerson));
           setMessage({ msg: `Added ${newName}`, type: 'success' });
-          setTimeout(() => {
-            setMessage(null);
-          }, 3000);
+          setTimeout(() => setMessage(null), 3000);
         });
     }
 
