@@ -20,27 +20,6 @@ const favoriteBlog = (blogs) => {
   return { title, author, likes };
 };
 
-/*const mostBlogsx = (blogs) => {
-  if (blogs.length === 0) return {};
-  const authorBlogList = blogs.map((a) => a.author);
-  const authors = {};
-  for (let author of authorBlogList) {
-    if (!authors.hasOwnProperty(author)) {
-      authors[author] = 1;
-    } else {
-      authors[author] += 1;
-    }
-  }
-  const values = Object.values(authors);
-  const keys = Object.keys(authors);
-  const max = Math.max(...values);
-  const index = values.indexOf(max);
-  return {
-    author: keys[index],
-    blogs: max,
-  };
-};*/
-
 const mostBlogs = (blogs) => {
   if (blogs.length === 0) return {};
   const totalList = blogs.map((a) => a.author);
@@ -55,9 +34,26 @@ const mostBlogs = (blogs) => {
   };
 };
 
+const mostLikes = (blogs) => {
+  if (blogs.length === 0) return {};
+  const reducedList = new Set(blogs.map((a) => a.author));
+  const counts = [...reducedList].map((item) =>
+    blogs.reduce((acc, blog) => {
+      if (blog.author === item) return acc + blog.likes;
+      return acc;
+    }, 0)
+  );
+  const max = Math.max(...counts);
+  return {
+    author: [...reducedList][counts.indexOf(max)],
+    likes: max,
+  };
+};
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
   mostBlogs,
+  mostLikes,
 };
