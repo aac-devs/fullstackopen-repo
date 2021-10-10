@@ -1,4 +1,5 @@
 node_modules
 .vscode
+.env
 
 par2/phonebook/db.json
