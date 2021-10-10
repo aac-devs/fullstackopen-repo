@@ -1,21 +1,17 @@
 const http = require('http');
 const express = require('express');
+const mongoose = require('mongoose');
+
 const app = express();
 const cors = require('cors');
-const mongoose = require('mongoose');
 const config = require('./utils/config.js');
 const logger = require('./utils/logger.js');
+const Blog = require('./models/bloglist.js');
 
-const blogSchema = new mongoose.Schema({
-  title: String,
-  author: String,
-  url: String,
-  likes: Number,
-});
-
-const Blog = mongoose.model('Blog', blogSchema);
-
-mongoose.connect(config.MONGODB_URI);
+mongoose
+  .connect(config.MONGODB_URI)
+  .then((resp) => logger.info('connected to mongodb'))
+  .catch((error) => logger.info(error.message));
 
 app.use(cors());
 app.use(express.json());
