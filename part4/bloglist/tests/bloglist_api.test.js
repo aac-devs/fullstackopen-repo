@@ -53,6 +53,24 @@ test('a valid blog can be added', async () => {
   expect(contents).toContain(newBlog.title);
 });
 
+test('a invalid blog can not be added', async () => {
+  const newBlog = {
+    title: 'TDD harms architecture',
+    author: 'Robert C. Martin',
+    url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
+  };
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+  const index = blogsAtEnd.map((b) => b.title).indexOf(newBlog.title);
+  expect(blogsAtEnd[index].likes).toBe(0);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });

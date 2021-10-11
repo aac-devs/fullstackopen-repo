@@ -7,7 +7,9 @@ bloglistRouter.get('/', async (request, response) => {
 });
 
 bloglistRouter.post('/', async (request, response) => {
-  const blog = new Blog(request.body);
+  const blogObj = request.body;
+  if (!blogObj?.likes) blogObj.likes = 0;
+  const blog = new Blog(blogObj);
   const result = await blog.save();
   response.status(201).json(result);
 });
