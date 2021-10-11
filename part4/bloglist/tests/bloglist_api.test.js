@@ -35,6 +35,24 @@ test('blog has a property defined as id', async () => {
   expect(response.body[0].id).toBeDefined();
 });
 
+test('a valid blog can be added', async () => {
+  const newBlog = {
+    title: 'TDD harms architecture',
+    author: 'Robert C. Martin',
+    url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
+    likes: 0,
+  };
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+  const blogsAtEnd = await helper.blogsInDb();
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+  const contents = blogsAtEnd.map((b) => b.title);
+  expect(contents).toContain(newBlog.title);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
