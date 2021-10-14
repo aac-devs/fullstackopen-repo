@@ -2,7 +2,8 @@ POST http://localhost:3003/api/users
 content-type: application/json
 
 {
-    "username": "aac-devs",
-    "name": "Andres",
+    "username": "andresarana24",
+    "name": "AndresAC",
     "password": "123456"
 }
+   
