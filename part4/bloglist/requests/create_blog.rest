@@ -1,8 +1,9 @@
 POST http://localhost:3003/api/blogs
 content-type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFhYy1kZXZzIiwiaWQiOiI2MTY2ZjY0MzNiMzRlN2E3NWVlYzRjNjEiLCJpYXQiOjE2MzQzMDU2OTl9.JtDv5bBicKBw6UxN8CemKzcaYe1Hqfsc8VvZMYuA2CA
 
 {
-    "title": "CSS is awesome!",
+    "title": "CSS with token is awesome!",
     "author": "Andres Arana",
     "url": "http://myurl.com/Mongo",
     "likes": 25,
