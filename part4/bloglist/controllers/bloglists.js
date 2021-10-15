@@ -29,8 +29,13 @@ bloglistRouter.post('/', async (request, response) => {
 });
 
 bloglistRouter.delete('/:id', async (request, response) => {
-  await Blog.findByIdAndRemove(request.params.id);
-  response.status(204).end();
+  const decodeToken = jwt.verify(request.token, process.env.SECRET);
+  const blogUser = await Blog.findById(request.params.id);
+  if (decodeToken.id === blogUser?.user.toString()) {
+    await blogUser.remove();
+    return response.status(204).end();
+  }
+  return response.status(404).json({ error: 'blog not found' });
 });
 
 bloglistRouter.put('/:id', async (request, response) => {
