@@ -2,8 +2,9 @@ POST http://localhost:3003/api/blogs
 content-type: application/json
 
 {
-    "title": "NodeJs is awesome!",
+    "title": "CSS is awesome!",
     "author": "Andres Arana",
-    "url": "http://myurl.com/Node",
-    "likes": 48
+    "url": "http://myurl.com/Mongo",
+    "likes": 25,
+    "userId": "6166f6433b34e7a75eec4c61"
 }
