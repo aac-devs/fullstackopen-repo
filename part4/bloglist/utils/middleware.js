@@ -1,3 +1,5 @@
+const { request, response } = require('express');
+
 const errorHandler = (error, request, response, next) => {
   if (error.message === 'user: missings') {
     return response.status(400).send({ error: 'password or username missing' });
@@ -11,4 +13,13 @@ const errorHandler = (error, request, response, next) => {
   next(error);
 };
 
-module.exports = { errorHandler };
+const tokenExtract = (request, response, next) => {
+  const authorization = request.get('authorization');
+  request.token = undefined;
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    request.token = authorization.substring(7);
+  }
+  next();
+};
+
+module.exports = { errorHandler, tokenExtract };
