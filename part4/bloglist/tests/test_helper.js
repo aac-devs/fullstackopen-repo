@@ -42,6 +42,24 @@ const initialBlogs = [
   */
 ];
 
+const initialUsers = [
+  {
+    username: 'aac-devs',
+    name: 'a devs',
+    password: '123456',
+  },
+  {
+    username: 'andresarana24',
+    name: 'a arana',
+    password: '789012',
+  },
+  {
+    username: 'andres-math',
+    name: 'a math',
+    password: '555555',
+  },
+];
+
 const blogsInDb = async () => {
   const blogs = await Blog.find({});
   return blogs.map((blog) => blog.toJSON());
@@ -52,4 +70,4 @@ const usersInDb = async () => {
   return users.map((user) => user.toJSON());
 };
 
-module.exports = { initialBlogs, blogsInDb, usersInDb };
+module.exports = { initialBlogs, initialUsers, blogsInDb, usersInDb };
